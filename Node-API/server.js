@@ -37,7 +37,17 @@ app.put("/usuarios/:id", async (request, response) => {
 });
 
 app.get("/usuarios", async (request, response) => {
-  const users = await prisma.user.findMany();
+  let users = [];
+  if (request.query != null) {
+    users = await prisma.user.findMany({
+      where: {
+        name: request.query.name,
+        age: request.query.age,
+      },
+    });
+  } else {
+    users = await prisma.user.findMany();
+  }
   response.status(200).json(users);
 });
 

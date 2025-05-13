@@ -7,8 +7,6 @@ const prisma = new PrismaClient();
 const app = express();
 app.use(express.json());
 
-const users = [];
-
 app.post('/usuarios', async (request, response) => {
     console.log(request.body);
 
@@ -22,7 +20,24 @@ app.post('/usuarios', async (request, response) => {
     response.status(201).json(request.body);
 });
 
-app.get('/usuarios', (request, response) => {
+app.put('/usuarios/:id', async (request, response) => {
+    console.log(request);
+
+    await prisma.user.update({
+        where: {
+            id: request.params.id
+        },
+        data: {
+            email: request.body.email,
+            name: request.body.name,
+            age: request.body.age,
+        }
+    });
+    response.status(201).json(request.body);
+});
+
+app.get('/usuarios', async (request, response) => {
+    const users = await prisma.user.findMany()
     response.status(200).json(users);
 });
 

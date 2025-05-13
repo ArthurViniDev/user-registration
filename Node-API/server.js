@@ -52,12 +52,28 @@ app.get("/usuarios", async (request, response) => {
 });
 
 app.delete("/usuarios/:id", async (request, response) => {
-  await prisma.user.delete({
-    where: {
-      id: request.params.id,
-    },
-  });
-  response.status(200).json({ message: "Usuário deletado com sucesso" });
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        id: request.params.id,
+      },
+    });
+
+    if (user == null) {
+      return response.status(404).json({ message: "Usuário não encontrado" });
+    }
+    await prisma.user.delete({
+      where: {
+        id: request.params.id,
+      },
+    });
+    response
+      .status(200)
+      .json({ message: `Usuário(a) ${user.name} deletado com sucesso` });
+  } catch (error) {
+    console.error(error);
+    response.status(500).json({ message: "Erro ao deletar usuário" });
+  }
 });
 
 app.listen(3000, () => {

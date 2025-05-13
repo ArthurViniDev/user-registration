@@ -7,12 +7,14 @@ const users = [];
 
 app.post('/usuarios', (request, response) => {
     console.log(request.body);
+
     users.push(request.body);
-    response.send('Ok, post!');
+
+    response.status(201).json(request.body);
 });
 
 // TODO: rota para listar usuários
 app.get('/usuarios', (request, response) => {
-    response.json(users);
+    response.status(200).json(users);
 });
 app.listen(3000);

@@ -19,7 +19,6 @@ app.post('/usuarios', async (request, response) => {
             age: request.body.age,
         }
     });
-
     response.status(201).json(request.body);
 });
 
